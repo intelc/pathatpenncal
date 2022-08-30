@@ -55,7 +55,7 @@ const UUIDGeneratorBrowser = () =>
     (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
   );
 function timeConversion(input){
-    let clean_input = input.replaceAll(",","")
+    let clean_input = input.replaceAll(",","").replaceAll(".","")
     
     if(String(clean_input).includes("pm")){
         clean_input_list = clean_input.replaceAll("pm","").split(":")
