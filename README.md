@@ -4,7 +4,10 @@
 
 Path at Penn sucks no doubt. One important feature of pennintouch was the ability to export ics file for calendars. I decided to fix this by creating a javascript script that downloads the ics file for a given path at penn calendar.
 ## Video Tutorial
-<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/69b23257cc324d7bb49c0ffb580dcea2" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+<a href="https://www.loom.com/share/69b23257cc324d7bb49c0ffb580dcea2">
+    <p>Calendar export for Path @ Penn - Watch Video</p>
+    <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/69b23257cc324d7bb49c0ffb580dcea2-with-play.gif">
+  </a>
 
 ## Installation
 1. Open Path at Penn -> Primary Cart -> "Calendar" Logo
