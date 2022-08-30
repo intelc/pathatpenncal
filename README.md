@@ -1,6 +1,6 @@
 # pathatpenncal
 
-##Motivation
+## Motivation
 
 Path at Penn sucks no doubt. One important feature of pennintouch was the ability to export ics file for calendars. I decided to fix this by creating a javascript script that downloads the ics file for a given path at penn calendar.
 ## Video Tutorial
