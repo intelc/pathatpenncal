@@ -1,3 +1,4 @@
+//https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
 function download(filename, text) {
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -10,19 +11,11 @@ function download(filename, text) {
   
     document.body.removeChild(element);
   }
-
-let a = document.querySelectorAll("body > main > div.panel.panel--2x.panel--kind-calendar.panel--visible > div > div.panel__body > div.section > div > svg > g > g.section")
-let b = Array.from(a)
-let c = b.map((item) => item.getAttribute('aria-label'));
-let unique_courses = [...new Set(c)];
-
-
-
-
+//https://ical.marudot.com/
 let prefix = 
 `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//ical.marudot.com//iCal Event Maker
+PRODID:-//intelchen.com//Intel Chen
 CALSCALE:GREGORIAN
 BEGIN:VTIMEZONE
 TZID:America/Havana
@@ -47,13 +40,17 @@ END:VTIMEZONE\n`
 
 let suffix = 'END:VCALENDAR'
 
+//https://bobbyhadz.com/blog/javascript-get-current-date-and-time-in-utc
 let isoStr = new Date().toISOString().replaceAll("-","").replaceAll(":","").replaceAll(".","")
 let currentUTC = isoStr.slice(0, isoStr.length - 4)+"Z"
 
+//https://github.com/30-seconds/30-seconds-of-code/blob/master/snippets/UUIDGeneratorBrowser.md
 const UUIDGeneratorBrowser = () =>
   ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
     (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
   );
+
+// convert Path @ Penn time format to UTC (substring) format that we can use  
 function timeConversion(input){
     let clean_input = input.replaceAll(",","").replaceAll(".","")
     
@@ -77,6 +74,8 @@ function timeConversion(input){
 }
 ///////////////
 
+// initial date designation. Here we are sacrificing the monday(even tho we start tuesday, I didn't make)
+// that into a special case to reduce complexity
 function getInitDate(input){
   if(input == "Tuesday"){
     return "0830"
@@ -94,15 +93,25 @@ function getInitDate(input){
     return "0901"
   }
 }
+//Scrape data from the Path @ Penn page
+let a = document.querySelectorAll("body > main > div.panel.panel--2x.panel--kind-calendar.panel--visible > div > div.panel__body > div.section > div > svg > g > g.section")
+let b = Array.from(a)
+let c = b.map((item) => item.getAttribute('aria-label'));
+let unique_courses = [...new Set(c)];
+
+//setting up the file content
 var cal_str = prefix
 let event_str = ""
 
+//iterate through each "event" and set up recurrence 
 for (let i = 0; i < unique_courses.length; i++) {
   let course_string = unique_courses[i]
   let course_name = course_string.split(' - ')[0]
   let couse_schedule_string = course_string.split(' - ')[1].split(' ')
 
+  
   if(course_string.includes("and")){
+  //Case where there is a two-day recurrence
     event_str = 
 `BEGIN:VEVENT
 DTSTAMP:${currentUTC}
@@ -114,6 +123,7 @@ SUMMARY:${course_name}
 END:VEVENT\n`
   }
   else{
+    //Case where there is a one-day recurrence
     event_str = 
 `BEGIN:VEVENT
 DTSTAMP:${currentUTC}
@@ -129,6 +139,7 @@ END:VEVENT\n`
   cal_str = cal_str + event_str 
 }
 
+//Finish the content with some suffix
 cal_str = cal_str+suffix
 
 
