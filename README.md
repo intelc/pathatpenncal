@@ -11,7 +11,7 @@ Path at Penn sucks no doubt. One important feature of pennintouch was the abilit
 
 ## Installation
 1. Open Path at Penn -> Primary Cart -> "Calendar" Logo
-2. Open console (F12 or right click -> inspect element-> choose console tab)
+2. Open console (F12 or right click -> inspect element-> choose console tab) (For **Safari**, open Preference-> Advanced -> Show Develop menu in menu bar and then right click -> Inspect Element)
 3. click inside the console and paste the script in this repo *script.js*
 4. "Enter” on the keyboard to run the script
 5. ta-da! Take the .ics file and import it into your calendar.
