@@ -78,19 +78,19 @@ function timeConversion(input){
 // that into a special case to reduce complexity
 function getInitDate(input){
   if(input == "Tuesday"){
-    return "0830"
+    return "0110"
   }
   else if(input == "Monday"){
-    return "0829"
+    return "0109"
   }
   else if(input == "Friday"){
-    return "0902"
+    return "0113"
   }
   else if(input == "Wednesday"){
-    return "0831"
+    return "0111"
   }
   else if(input == "Thursday"){
-    return "0901"
+    return "0112"
   }
 }
 //Scrape data from the Path @ Penn page
@@ -116,9 +116,9 @@ for (let i = 0; i < unique_courses.length; i++) {
 `BEGIN:VEVENT
 DTSTAMP:${currentUTC}
 UID:${UUIDGeneratorBrowser()}
-DTSTART;TZID=America/Havana:2022${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
-RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()},${couse_schedule_string[6].slice(0,2).toUpperCase()};UNTIL=20221212T170000Z
-DTEND;TZID=America/Havana:2022${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
+DTSTART;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
+RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()},${couse_schedule_string[6].slice(0,2).toUpperCase()};UNTIL=20230426T170000Z
+DTEND;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
 SUMMARY:${course_name}
 END:VEVENT\n`
   }
@@ -128,9 +128,9 @@ END:VEVENT\n`
 `BEGIN:VEVENT
 DTSTAMP:${currentUTC}
 UID:${UUIDGeneratorBrowser()}
-DTSTART;TZID=America/Havana:2022${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
-RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()};UNTIL=20221212T170000Z
-DTEND;TZID=America/Havana:2022${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
+DTSTART;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
+RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()};UNTIL=20230426T170000Z
+DTEND;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
 SUMMARY:${course_name}
 END:VEVENT\n`
   }
