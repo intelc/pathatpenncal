@@ -1,4 +1,15 @@
 //https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
+
+
+//PLEASE UPDATE THE BELOW PARAMETERS
+
+let CURRENT_SEMESTER_END = `1211`  //MMDD
+let CURRENT_SEMESTER_BEGINING = `0829` 
+
+
+
+
+
 function download(filename, text) {
   var element = document.createElement('a');
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -81,7 +92,7 @@ if(input == "Tuesday"){
   return "0829"
 }
 else if(input == "Monday"){
-  return "0928"
+  return "0828"
 }
 else if(input == "Friday"){
   return "0901"
@@ -116,9 +127,9 @@ if(course_string.includes("and")){
 `BEGIN:VEVENT
 DTSTAMP:${currentUTC}
 UID:${UUIDGeneratorBrowser()}
-DTSTART;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
-RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()},${couse_schedule_string[6].slice(0,2).toUpperCase()};UNTIL=20231211T170000Z
-DTEND;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
+DTSTART;TZID=America/Havana:${new Date().getFullYear()}${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
+RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()},${couse_schedule_string[6].slice(0,2).toUpperCase()};UNTIL=${new Date().getFullYear()}1211T170000Z
+DTEND;TZID=America/Havana:${new Date().getFullYear()}${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
 SUMMARY:${course_name}
 END:VEVENT\n`
 }
@@ -128,9 +139,9 @@ else{
 `BEGIN:VEVENT
 DTSTAMP:${currentUTC}
 UID:${UUIDGeneratorBrowser()}
-DTSTART;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
-RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()};UNTIL=20231211T170000Z
-DTEND;TZID=America/Havana:2023${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
+DTSTART;TZID=America/Havana:${new Date().getFullYear()}${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[2])}00
+RRULE:FREQ=WEEKLY;BYDAY=${couse_schedule_string[0].slice(0,2).toUpperCase()};UNTIL=${new Date().getFullYear()}1211T170000Z
+DTEND;TZID=America/Havana:${new Date().getFullYear()}${getInitDate(couse_schedule_string[0])}T${timeConversion(couse_schedule_string[4])}00
 SUMMARY:${course_name}
 END:VEVENT\n`
 }
