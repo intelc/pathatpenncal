@@ -1,14 +1,42 @@
 //https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
 
 
+//////////////////////
 //PLEASE UPDATE THE BELOW PARAMETERS
 
 let CURRENT_SEMESTER_END = `1211`  //MMDD
-let CURRENT_SEMESTER_BEGINING = `0829` 
+let CURRENT_SEMESTER_BEGINING_MONDAY = `0828` 
+
+//////////////////////
+//////////////////////
 
 
 
+function generateWeekDates(mondayDateString) {
+  // Parse year, month, and day from the provided string
+  const year = parseInt(mondayDateString.substring(0, 4), 10);
+  const month = parseInt(mondayDateString.substring(4, 6), 10) - 1; // months are 0-indexed in JS
+  const day = parseInt(mondayDateString.substring(6, 8), 10);
 
+  // Create a new date object for the provided Monday
+  const date = new Date(year, month, day);
+
+  const weekDates = [];
+
+  // Loop for Tuesday through Friday (1 through 4 days from Monday)
+  for (let i = 1; i <= 4; i++) {
+      // Increment day by 1
+      date.setDate(date.getDate() + 1);
+      
+      // Format date to 'yyyymmdd'
+      const formattedDate = `${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+      
+      weekDates.push(formattedDate);
+  }
+
+  return weekDates;
+}
+let first_week = generateWeekDates(new Date().getFullYear()+ CURRENT_SEMESTER_BEGINING_MONDAY)
 
 function download(filename, text) {
   var element = document.createElement('a');
@@ -87,21 +115,23 @@ function timeConversion(input){
 
 // initial date designation. Here we are sacrificing the monday(even tho we start tuesday, I didn't make)
 // that into a special case to reduce complexity
+console.log(first_week
+  )
 function getInitDate(input){
 if(input == "Tuesday"){
-  return "0829"
+  return first_week[0]
 }
 else if(input == "Monday"){
-  return "0828"
+  return CURRENT_SEMESTER_BEGINING_MONDAY
 }
 else if(input == "Friday"){
-  return "0901"
+  return first_week[3]
 }
 else if(input == "Wednesday"){
-  return "0830"
+  return first_week[1]
 }
 else if(input == "Thursday"){
-  return "0901"
+  return first_week[2]
 }
 }
 //Scrape data from the Path @ Penn page
@@ -150,6 +180,7 @@ END:VEVENT\n`
 cal_str = cal_str + event_str 
 }
 
+cal_str = cal_str +suffix
 
 // Start file download.
 download("course_calendar.ics",
