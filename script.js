@@ -140,6 +140,8 @@ let b = Array.from(a)
 let c = b.map((item) => item.getAttribute('aria-label'));
 let unique_courses = [...new Set(c)];
 
+unique_courses = unique_courses.filter(course => course.includes("Registered"))
+
 //setting up the file content
 var cal_str = prefix
 let event_str = ""
@@ -150,6 +152,7 @@ let course_string = unique_courses[i]
 let course_name = course_string.split(' - ')[0]
 let couse_schedule_string = course_string.split(' - ')[1].split(' ')
 
+console.log(course_string)
 
 if(course_string.includes("and")){
 //Case where there is a two-day recurrence
