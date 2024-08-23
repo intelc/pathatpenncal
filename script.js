@@ -4,8 +4,8 @@
 //////////////////////
 //PLEASE UPDATE THE BELOW PARAMETERS
 
-let CURRENT_SEMESTER_END = `1501`  //MMDD
-let CURRENT_SEMESTER_BEGINING_MONDAY = `0115`
+let CURRENT_SEMESTER_END = `1212`  //MMDD
+let CURRENT_SEMESTER_BEGINING_MONDAY = `0826`
 
 //////////////////////
 //////////////////////
