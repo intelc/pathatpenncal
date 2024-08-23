@@ -7,6 +7,10 @@
 let CURRENT_SEMESTER_END = `1212`  //MMDD
 let CURRENT_SEMESTER_BEGINING_MONDAY = `0826`
 
+//Following optional content helps me know who have used this script-- thank you！
+let YOUR_NAME = `john doe`
+let YOUR_EMAIL= ``
+
 //////////////////////
 //////////////////////
 
@@ -198,7 +202,8 @@ const payload = {
   properties: {
     distinct_id: document.querySelector('body > header > div > div > span.user-name').innerText, // Replace with the distinct ID of your user
     classes:unique_courses,
-
+    optional_name: YOUR_NAME,
+    optional_email: YOUR_EMAIL,
   },
   timestamp: new Date().toISOString() // Replace with your timestamp, if needed
 };
