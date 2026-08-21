@@ -4,8 +4,8 @@
 //////////////////////
 //PLEASE UPDATE THE BELOW PARAMETERS
 
-let CURRENT_SEMESTER_END = `0429`  //MMDD
-let CURRENT_SEMESTER_BEGINING_MONDAY = `0112`
+let CURRENT_SEMESTER_END = `1207`  //MMDD
+let CURRENT_SEMESTER_BEGINING_MONDAY = `0824`
 
 //Following optional content helps me know who have used this script-- thank you！
 let YOUR_NAME = `john doe`
