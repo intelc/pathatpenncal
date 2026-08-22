@@ -3,6 +3,8 @@
   const ROOT_ID = 'pathcal-exporter-root';
   const POSTHOG_KEY = 'phc_uo5R9K8TzXAeF3WmOUqsKJ2cxdR8N0x14BylN5xeLOl';
   const POSTHOG_ENDPOINT = 'https://us.i.posthog.com/i/v0/e/';
+  const TELEMETRY_SCHEMA_VERSION = 2;
+  const DIAGNOSTIC_LABEL_LIMIT = 50;
   const PATH_TERM_SELECTOR = 'body > main > div.panel.panel--kind-results.panel--visible.cart.cart--primary > div > div.panel__info-bar > div';
   const DAY_CODES = {
     Sunday: 'SU', Monday: 'MO', Tuesday: 'TU', Wednesday: 'WE',
@@ -84,12 +86,21 @@
     }).filter((meeting) => meeting.days.length);
   }
 
-  function collectMeetings() {
-    const labels = Array.from(document.querySelectorAll('[aria-label]'))
+  function collectSchedule() {
+    const calendarRoot = document.querySelector('.panel.panel--kind-calendar.panel--visible') || document;
+    const calendarLabels = [...new Set(Array.from(calendarRoot.querySelectorAll('g.section[aria-label]'))
       .map((node) => node.getAttribute('aria-label'))
-      .filter((label) => label && /Registered/i.test(label));
-    const uniqueLabels = [...new Set(labels)];
-    return uniqueLabels.flatMap((label) => parseMeetingLabel(label) || []);
+      .filter(Boolean))];
+    const registeredLabels = [...new Set(Array.from(calendarRoot.querySelectorAll('[aria-label]'))
+      .map((node) => node.getAttribute('aria-label'))
+      .filter((label) => label && /Registered/i.test(label)))];
+    const parsedLabels = registeredLabels.map((label) => parseMeetingLabel(label));
+    return {
+      calendarLabels: calendarLabels.length ? calendarLabels : registeredLabels,
+      registeredLabels,
+      parsedLabelCount: parsedLabels.filter((meetings) => meetings?.length).length,
+      meetings: parsedLabels.flatMap((meetings) => meetings || [])
+    };
   }
 
   function dateForFirstDay(termStart, dayCode) {
@@ -172,46 +183,116 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  function randomId() {
+    try {
+      return crypto.randomUUID();
+    } catch {
+      return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    }
+  }
+
   function telemetryId() {
     const storageKey = 'pathcal_telemetry_id';
     try {
       const existing = localStorage.getItem(storageKey);
       if (existing) return existing;
-      const created = crypto.randomUUID();
+      const created = randomId();
       localStorage.setItem(storageKey, created);
       return created;
     } catch {
-      return crypto.randomUUID();
+      return randomId();
     }
   }
 
-  function captureTelemetry({ name, email, termLabel, courseCount, meetingCount }) {
+  function redactDiagnosticLabel(label) {
+    const clean = String(label || '').replace(/\s+/g, ' ').trim();
+    const dividerIndex = clean.indexOf(' - ');
+    if (dividerIndex < 0) return `<unrecognized calendar label: ${clean.length} characters>`;
+    return `<course> - ${clean.slice(dividerIndex + 3).replace(/\d/g, '0')}`;
+  }
+
+  function detectPathVersion() {
+    const versionText = document.querySelector('.empty-space__version')?.textContent || '';
+    return versionText.match(/\b\d+(?:\.\d+){2,}\b/)?.[0] || 'unknown';
+  }
+
+  function buildTelemetryProperties({
+    name, email, detectedTerm, termLabel, courseCount, meetingCount,
+    calendarLabels, registeredLabelCount, parsedLabelCount, pathVersion, shareDiagnostics
+  }) {
     const person = {};
     if (name) person.name = name;
     if (email) person.email = email;
-    const properties = {
+    const parseStatus = calendarLabels.length === 0 ? 'no_calendar_labels' :
+      registeredLabelCount === 0 ? 'no_registered_labels' :
+      parsedLabelCount === registeredLabelCount ? 'success' :
+      parsedLabelCount > 0 ? 'partial' : 'failed';
+    const usageProperties = {
       source: 'pathcal_bookmarklet',
       term: termLabel,
       course_count: courseCount,
       meeting_pattern_count: meetingCount,
+      telemetry_schema_version: TELEMETRY_SCHEMA_VERSION,
+      path_version: pathVersion,
+      detected_term: detectedTerm || 'unknown',
+      term_changed: Boolean(detectedTerm && detectedTerm !== termLabel),
+      calendar_label_count: calendarLabels.length,
+      registered_label_count: registeredLabelCount,
+      parsed_label_count: parsedLabelCount,
+      unparsed_label_count: Math.max(0, registeredLabelCount - parsedLabelCount),
+      parse_status: parseStatus,
+      diagnostic_sharing_enabled: shareDiagnostics,
       ...(Object.keys(person).length ? { $set: person } : { $process_person_profile: false })
     };
+    const diagnosticLabels = calendarLabels
+      .slice(0, DIAGNOSTIC_LABEL_LIMIT)
+      .map(redactDiagnosticLabel);
+    const diagnosticProperties = shareDiagnostics ? {
+      source: 'pathcal_bookmarklet',
+      telemetry_schema_version: TELEMETRY_SCHEMA_VERSION,
+      term: termLabel,
+      path_version: pathVersion,
+      parse_status: parseStatus,
+      calendar_label_count: calendarLabels.length,
+      diagnostic_labels: diagnosticLabels,
+      diagnostic_labels_truncated: calendarLabels.length > DIAGNOSTIC_LABEL_LIMIT,
+      redaction: 'course_and_section_removed_numbers_zeroed',
+      $process_person_profile: false
+    } : null;
+    return { usageProperties, diagnosticProperties };
+  }
+
+  function posthogCapture(event, distinctId, properties) {
     return fetch(POSTHOG_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         api_key: POSTHOG_KEY,
-        distinct_id: telemetryId(),
-        event: 'calendar downloaded',
+        distinct_id: distinctId,
+        event,
         properties
       }),
       keepalive: true
     }).catch(() => {});
   }
 
+  function captureTelemetry(input) {
+    try {
+      const { usageProperties, diagnosticProperties } = buildTelemetryProperties(input);
+      const requests = [posthogCapture('calendar downloaded', telemetryId(), usageProperties)];
+      if (diagnosticProperties) {
+        requests.push(posthogCapture('parser diagnostics shared', `diagnostic-${randomId()}`, diagnosticProperties));
+      }
+      return Promise.allSettled(requests);
+    } catch {
+      return Promise.resolve([]);
+    }
+  }
+
   function showModal() {
     const detectedLabel = detectTerm();
-    const meetings = collectMeetings();
+    const schedule = collectSchedule();
+    const { meetings } = schedule;
     const availableTerms = Object.keys(TERM_DATA.terms).sort().reverse();
     const selectedLabel = detectedLabel || availableTerms[0];
     const root = document.createElement('div');
@@ -234,6 +315,10 @@
         #${ROOT_ID} input,#${ROOT_ID} select{width:100%;margin-top:6px;padding:10px;border:1px solid #9eb3d1;border-radius:8px;background:#fff;color:#011f5b;font:600 13px Arial,sans-serif}
         #${ROOT_ID} input::placeholder{color:#8491a7;font-weight:400}
         #${ROOT_ID} input:focus,#${ROOT_ID} select:focus{outline:2px solid rgba(23,85,155,.2);border-color:#17559b}
+        #${ROOT_ID} .pc-share{display:flex;gap:9px;align-items:flex-start;margin-top:12px;color:#011f5b;font-size:11px;font-weight:400;line-height:1.35;text-transform:none;letter-spacing:0;cursor:pointer}
+        #${ROOT_ID} .pc-share input{width:15px;height:15px;flex:0 0 15px;margin:1px 0 0;padding:0;accent-color:#011f5b}
+        #${ROOT_ID} .pc-share strong{display:block;margin-bottom:2px;font-size:11px}
+        #${ROOT_ID} .pc-share small{display:block;color:#52617b;font-size:10px;font-weight:400}
         #${ROOT_ID} .pc-privacy{margin-top:10px;font-size:10px;color:#52617b;line-height:1.4}
         #${ROOT_ID} .pc-term{margin:12px 0 14px;border:1px solid rgba(1,31,91,.13);border-radius:10px;background:#fff}
         #${ROOT_ID} .pc-term summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;cursor:pointer;list-style:none}
@@ -263,7 +348,8 @@
             <label for="pc-name">Name<input id="pc-name" autocomplete="name" placeholder="Your name" /></label>
             <label for="pc-email">Email<input id="pc-email" type="email" autocomplete="email" placeholder="you@upenn.edu" /></label>
           </div>
-          <div class="pc-privacy">If provided, these details go to PostHog with the detected term and aggregate counts. Course names and meeting times never leave this page.</div>
+          <label class="pc-share" for="pc-share-diagnostics"><input id="pc-share-diagnostics" type="checkbox" checked /><span><strong>Share redacted schedule diagnostics</strong><small>Sends Path@Penn's calendar-label format after removing course and section identities and replacing numeric values. Uncheck to send aggregate health only.</small></span></label>
+          <div class="pc-privacy">PostHog receives basic parser health plus any name or email you enter. Pathcal never sends the page, your Penn account data, or the generated calendar file.</div>
         </div>
         <details class="pc-term">
           <summary><div><span>Detected term</span><strong class="pc-term-name">${selectedLabel}</strong></div><span class="pc-change">Change</span></summary>
@@ -287,6 +373,7 @@
       const name = root.querySelector('#pc-name').value.trim();
       const emailInput = root.querySelector('#pc-email');
       const email = emailInput.value.trim();
+      const shareDiagnostics = root.querySelector('#pc-share-diagnostics').checked;
       if (email && !emailInput.checkValidity()) {
         emailInput.reportValidity();
         return;
@@ -296,7 +383,13 @@
         email,
         termLabel: label,
         courseCount: new Set(meetings.map((item) => item.summary)).size,
-        meetingCount: meetings.length
+        meetingCount: meetings.length,
+        detectedTerm: detectedLabel,
+        calendarLabels: schedule.calendarLabels,
+        registeredLabelCount: schedule.registeredLabels.length,
+        parsedLabelCount: schedule.parsedLabelCount,
+        pathVersion: detectPathVersion(),
+        shareDiagnostics
       });
       downloadCalendar(buildIcs(meetings, TERM_DATA.terms[label]), label);
       root.remove();

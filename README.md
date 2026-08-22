@@ -8,7 +8,7 @@ The new bookmarklet-based exporter lives at [pathcal.intelchen.com](https://path
 
 The website source is in [`web/`](web/). The original console script remains available below for existing users.
 
-Pathcal builds schedules locally in the browser. On download, it sends the detected term and aggregate course/meeting counts to PostHog. A student may optionally include their name and email. Course names, meeting times, and calendar contents are never transmitted.
+Pathcal builds schedules locally in the browser. On download, it sends parser-health metadata, the detected term, and aggregate course/meeting counts to PostHog. A student may optionally include their name and email. A default-selected control also shares redacted Path@Penn calendar-label formats: Pathcal removes the course and section identity and replaces numeric values before sending them as a separate anonymous event. Students can uncheck this control to send aggregate health only. The page, Penn account data, and generated calendar file are never transmitted.
 
 ## Development
 

@@ -28,10 +28,38 @@ test('term detection checks the visible Primary Cart info bar', async () => {
   assert.match(source, /primaryCartText/);
 });
 
-test('telemetry sends aggregate counts but not course names or meeting times', async () => {
+test('telemetry always sends parser health but keeps labels out of the identified event', async () => {
   const source = await readFile(new URL('../src/bookmarklet-source.js', import.meta.url), 'utf8');
-  const telemetry = source.slice(source.indexOf('function captureTelemetry'), source.indexOf('function showModal'));
+  const telemetry = source.slice(source.indexOf('function buildTelemetryProperties'), source.indexOf('function posthogCapture'));
   assert.match(telemetry, /course_count/);
   assert.match(telemetry, /meeting_pattern_count/);
-  assert.doesNotMatch(telemetry, /meeting\.summary|classes:/);
+  assert.match(telemetry, /parse_status/);
+  assert.match(telemetry, /parsed_label_count/);
+  const usageProperties = telemetry.slice(telemetry.indexOf('const usageProperties'), telemetry.indexOf('const diagnosticLabels'));
+  assert.doesNotMatch(usageProperties, /diagnostic_labels/);
+});
+
+test('diagnostic labels are redacted, anonymous, optional, and selected by default', async () => {
+  const source = await readFile(new URL('../src/bookmarklet-source.js', import.meta.url), 'utf8');
+  const helpers = source.slice(source.indexOf('function redactDiagnosticLabel'), source.indexOf('function posthogCapture'));
+  const buildTelemetryProperties = new Function(
+    'TELEMETRY_SCHEMA_VERSION',
+    'DIAGNOSTIC_LABEL_LIMIT',
+    `${helpers}; return buildTelemetryProperties;`
+  )(2, 50);
+  const label = 'CIS 1200 section 001 - Monday from 10:15am to 11:14am. You are registered for this section';
+  const input = {
+    name: 'Student', email: 'student@upenn.edu', detectedTerm: 'Fall 2026', termLabel: 'Fall 2026',
+    courseCount: 1, meetingCount: 1, calendarLabels: [label], registeredLabelCount: 1,
+    parsedLabelCount: 1, pathVersion: '700.79.116', shareDiagnostics: true
+  };
+  const shared = buildTelemetryProperties(input);
+  assert.equal(shared.usageProperties.$set.email, 'student@upenn.edu');
+  assert.doesNotMatch(JSON.stringify(shared.usageProperties), /CIS 1200|10:15am/);
+  assert.deepEqual(shared.diagnosticProperties.diagnostic_labels, [
+    '<course> - Monday from 00:00am to 00:00am. You are registered for this section'
+  ]);
+  assert.equal(shared.diagnosticProperties.$process_person_profile, false);
+  assert.equal(buildTelemetryProperties({ ...input, shareDiagnostics: false }).diagnosticProperties, null);
+  assert.match(source, /id="pc-share-diagnostics" type="checkbox" checked/);
 });
