@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Import your Path@Penn classes into your calendar in one click." />
+    <meta name="description" content="Import your Path@Penn classes into your calendar in three quick steps." />
     <meta name="theme-color" content="#f7f5ef" />
     <meta property="og:title" content="Pathcal — Path@Penn to your calendar" />
-    <meta property="og:description" content="One click from Path@Penn. No console and no semester dates to configure." />
+    <meta property="og:description" content="Set it up once, then export your Path@Penn classes in three quick steps." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pathcal.intelchen.com/" />
     <meta property="og:image" content="https://pathcal.intelchen.com/og.png" />
@@ -16,15 +16,11 @@
     <meta name="twitter:image" content="https://pathcal.intelchen.com/og.png" />
     <title>Pathcal — Import Path@Penn classes into your calendar</title>
   </head>
-  <body data-demo-step="1">
+  <body>
     <div class="page-shell">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#top" aria-label="Pathcal home"><span class="brand-mark" aria-hidden="true"></span>pathcal</a>
-        <div class="nav-links">
-          <a href="#how">How it works</a>
-          <a href="#privacy">Privacy</a>
-          <span class="term-ready"><i aria-hidden="true"></i> Fall 2026 ready</span>
-        </div>
+        <span class="term-ready"><i aria-hidden="true"></i> Fall 2026 ready</span>
       </nav>
 
       <main id="top">
@@ -35,59 +31,74 @@
             <span aria-hidden="true">classes into</span>
             <span class="headline-chip calendar-chip" aria-hidden="true"><img src="/google-calendar.svg" alt="" /><span>Calendar</span></span>
           </h1>
-          <div class="hero-actions">
-            <a class="bookmarklet" data-bookmarklet draggable="true" href="#"><span aria-hidden="true">↗</span> Export Path@Penn</a>
-            <button class="secondary-action" data-demo type="button">See how it works</button>
-          </div>
-          <p class="privacy-note"><span aria-hidden="true">▢</span> Runs locally. Your courses stay yours.</p>
+          <p>Set it up once, then export your schedule in three quick steps.</p>
         </header>
 
-        <section class="demo-section" id="how" aria-labelledby="demo-title">
-          <h2 class="sr-only" id="demo-title">How the bookmarklet works</h2>
-          <div class="step-picker" aria-label="Bookmarklet steps">
-            <button type="button" data-step="1" aria-pressed="true"><span>1</span> Drag once</button>
-            <button type="button" data-step="2" aria-pressed="false"><span>2</span> Open Path@Penn</button>
-            <button type="button" data-step="3" aria-pressed="false"><span>3</span> Export</button>
-          </div>
+        <section class="walkthrough" aria-label="Set up and use Pathcal">
+          <article class="walkthrough-step" id="step-1">
+            <div class="step-copy">
+              <p class="step-label"><span>1</span> Set up once</p>
+              <h2>Add Pathcal to your bookmarks bar.</h2>
+              <p>Drag the button below into the bar beneath Chrome’s address box. You only need to do this once.</p>
+              <div class="step-actions">
+                <a class="bookmarklet" data-bookmarklet draggable="true" href="#"><span aria-hidden="true">↗</span> Export Path@Penn</a>
+                <button class="copy-action" type="button" data-copy-bookmarklet>Copy bookmark URL</button>
+              </div>
+              <p class="drag-status" data-drag-status aria-live="polite">Drag the navy button—don’t click it on this page.</p>
+              <aside class="chrome-help">
+                <strong>Don’t see the bookmarks bar?</strong>
+                <div class="shortcuts"><span><kbd>⌘</kbd><kbd>⇧</kbd><kbd>B</kbd> Mac</span><span><kbd>Ctrl</kbd><kbd>⇧</kbd><kbd>B</kbd> Windows / Linux</span></div>
+                <p>Or open <b>⋮</b> → <b>Bookmarks and lists</b> → <b>Show bookmarks bar</b>.</p>
+              </aside>
+            </div>
+            <div class="step-visual drag-visual" role="img" aria-label="Animation of the Export Path at Penn button moving to a Chrome bookmarks bar">
+              <div class="chrome-frame">
+                <div class="chrome-tabs"><span></span><span></span><span></span><div>pathcal.intelchen.com</div><b>⋮</b></div>
+                <div class="visual-bookmarks"><span class="drop-target">Drop here</span><span>Canvas</span><span>Penn Email</span></div>
+                <div class="mini-page"><div class="mini-pathcal-mark"></div><i></i><i></i><i></i></div>
+                <span class="drag-token">↗ Export Path@Penn</span><span class="drag-pointer" aria-hidden="true">↖</span>
+              </div>
+            </div>
+          </article>
 
-          <div class="browser-shell" data-demo-shell>
-            <div class="browser-top"><div class="window-dots"><i></i><i></i><i></i></div><div class="address">courses.upenn.edu</div></div>
-            <div class="bookmarks-bar"><span class="saved-bookmark">↗ Export Path@Penn</span><span>Canvas</span><span>Penn Email</span></div>
-            <div class="path-header"><div><b>P</b> Path@Penn</div><span>Fall 2026 · Primary Cart</span></div>
-            <div class="path-body">
-              <aside><span>Search classes</span><strong>Primary cart</strong><span>Registration</span><span>Degree audit</span></aside>
-              <div class="schedule">
-                <div class="schedule-heading"><strong>Weekly schedule</strong><span>August 25 – December 7</span></div>
-                <div class="week">
-                  <div class="day"><b>MON</b><i class="course blue one">CIS 1200<small>10:15–11:14</small></i><i class="course red two">MATH 1410<small>1:45–2:44</small></i></div>
-                  <div class="day"><b>TUE</b><i class="course gold three">ECON 0100<small>11:45–1:14</small></i></div>
-                  <div class="day"><b>WED</b><i class="course blue one">CIS 1200<small>10:15–11:14</small></i><i class="course red two">MATH 1410<small>1:45–2:44</small></i></div>
-                  <div class="day"><b>THU</b><i class="course gold three">ECON 0100<small>11:45–1:14</small></i></div>
-                  <div class="day"><b>FRI</b><i class="course blue one">CIS 1200<small>10:15–11:14</small></i><i class="course red two">MATH 1410<small>1:45–2:44</small></i></div>
+          <article class="walkthrough-step reverse" id="step-2">
+            <div class="step-copy">
+              <p class="step-label"><span>2</span> Open your schedule</p>
+              <h2>Go to your Primary Cart in Path@Penn.</h2>
+              <p>Sign in, open <strong>Primary Cart</strong>, and switch to its calendar view so your weekly schedule is visible.</p>
+              <a class="path-link" href="https://courses.upenn.edu/#action=login,primary-cart" target="_blank" rel="noreferrer">Open Path@Penn <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="step-visual path-visual" role="img" aria-label="Path at Penn with Primary Cart selected and its weekly calendar visible">
+              <div class="app-frame">
+                <div class="app-top"><img src="/path-at-penn.svg" alt="Path at Penn" /><span>Fall 2026</span></div>
+                <div class="app-body">
+                  <aside><span>Search classes</span><strong>Primary Cart <b>←</b></strong><span>Registration</span><span>Degree audit</span></aside>
+                  <div class="mini-schedule"><div><strong>Weekly schedule</strong><small>Calendar view</small></div><section><i class="class-block blue a">CIS 1200</i><i class="class-block gold b">ECON 0100</i><i class="class-block red c">MATH 1410</i><i class="class-block blue d">CIS 1200</i></section></div>
                 </div>
               </div>
             </div>
-            <div class="demo-shade"></div>
-            <div class="export-dialog" role="dialog" aria-label="Calendar export preview">
-              <div class="dialog-heading"><div><h3>Your calendar is ready.</h3><p>We found 4 registered courses and 7 meeting times.</p></div><span>✓</span></div>
-              <div class="detected-term"><div><strong>Fall 2026 detected</strong><small>Aug 25 – Dec 7 · breaks + schedule swaps included</small></div><b>✓ Penn Almanac</b></div>
-              <div class="dialog-summary"><span><b>4</b> courses</span><span><b>70</b> class days</span><span><b>America/New_York</b></span></div>
-              <div class="dialog-actions"><button type="button">Not Fall 2026?</button><span>Download .ics</span></div>
+          </article>
+
+          <article class="walkthrough-step" id="step-3">
+            <div class="step-copy">
+              <p class="step-label"><span>3</span> Export</p>
+              <h2>Click the bookmark. That’s it.</h2>
+              <p>Pathcal detects the semester, includes Penn’s breaks and schedule swaps, and downloads a calendar file ready to open.</p>
+              <p class="privacy-note"><span aria-hidden="true">▢</span> Runs locally. Your courses stay yours.</p>
             </div>
-          </div>
-          <p class="demo-caption" data-caption aria-live="polite">Drag the navy button into your bookmarks bar once.</p>
+            <div class="step-visual click-visual" role="img" aria-label="Export Path at Penn bookmark being clicked and a calendar download becoming ready">
+              <div class="chrome-frame">
+                <div class="chrome-tabs"><span></span><span></span><span></span><div>courses.upenn.edu</div><b>⋮</b></div>
+                <div class="visual-bookmarks"><span class="saved-bookmark">↗ Export Path@Penn</span><span>Canvas</span><span>Penn Email</span></div>
+                <div class="export-card"><span class="success-mark">✓</span><div><strong>Your calendar is ready.</strong><small>Fall 2026 · 4 courses · breaks included</small></div><b>Download .ics</b></div>
+                <span class="click-pointer" aria-hidden="true">↖</span>
+              </div>
+            </div>
+          </article>
         </section>
 
-        <section class="trust-section" id="privacy">
-          <div><p class="section-label">Automatic semester setup</p><h2>Penn’s calendar, already handled.</h2><p>Pathcal reads the selected term from Path@Penn and uses official Penn Almanac dates for the first and last class, breaks, holidays, and schedule swaps.</p><a href="https://almanac.upenn.edu/penn-academic-calendar" target="_blank" rel="noreferrer">View the source calendar ↗</a></div>
-          <div class="term-card"><span>Current term</span><strong>Fall 2026</strong><p>Aug 25 – Dec 7</p><ul><li>Labor Day excluded</li><li>Fall break excluded</li><li>Thanksgiving swap included</li></ul><small>Updated from Penn Almanac</small></div>
-        </section>
-
-        <section class="install-section">
-          <p class="section-label">Ready when you are</p>
-          <h2>One tiny bookmark.<br />A semester of saved time.</h2>
-          <div class="install-actions"><a class="bookmarklet" data-bookmarklet draggable="true" href="#"><span aria-hidden="true">↗</span> Export Path@Penn</a><button type="button" data-copy-bookmarklet>Copy bookmark URL</button></div>
-          <p>Drag the button to your bookmarks bar. If you copy it, paste it into a bookmark’s URL field—not DevTools. Works in Chrome, Edge, Firefox, and Safari on desktop.</p>
+        <section class="semester-note">
+          <p><span>✓</span> Fall 2026 dates are already handled from the <a href="https://almanac.upenn.edu/penn-academic-calendar" target="_blank" rel="noreferrer">Penn Almanac</a>.</p>
         </section>
       </main>
 
