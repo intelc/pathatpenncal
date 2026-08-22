@@ -1,6 +1,9 @@
 (() => {
   const TERM_DATA = __PATHCAL_TERM_DATA__;
   const ROOT_ID = 'pathcal-exporter-root';
+  const POSTHOG_KEY = 'phc_uo5R9K8TzXAeF3WmOUqsKJ2cxdR8N0x14BylN5xeLOl';
+  const POSTHOG_ENDPOINT = 'https://us.i.posthog.com/i/v0/e/';
+  const PATH_TERM_SELECTOR = 'body > main > div.panel.panel--kind-results.panel--visible.cart.cart--primary > div > div.panel__info-bar > div';
   const DAY_CODES = {
     Sunday: 'SU', Monday: 'MO', Tuesday: 'TU', Wednesday: 'WE',
     Thursday: 'TH', Friday: 'FR', Saturday: 'SA'
@@ -34,10 +37,11 @@
   }
 
   function detectTerm() {
+    const primaryCartText = document.querySelector(PATH_TERM_SELECTOR)?.textContent || '';
     const selectedText = Array.from(document.querySelectorAll('select option:checked, [aria-selected="true"]'))
       .map((node) => node.textContent || '')
       .join(' ');
-    const pageText = `${selectedText} ${document.body.innerText.slice(0, 50000)}`;
+    const pageText = `${primaryCartText} ${selectedText} ${document.body.innerText.slice(0, 50000)}`;
     const candidates = Object.keys(TERM_DATA.terms);
     return candidates.find((label) => pageText.toLowerCase().includes(label.toLowerCase())) ||
       candidates.find((label) => {
@@ -168,6 +172,43 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  function telemetryId() {
+    const storageKey = 'pathcal_telemetry_id';
+    try {
+      const existing = localStorage.getItem(storageKey);
+      if (existing) return existing;
+      const created = crypto.randomUUID();
+      localStorage.setItem(storageKey, created);
+      return created;
+    } catch {
+      return crypto.randomUUID();
+    }
+  }
+
+  function captureTelemetry({ name, email, termLabel, courseCount, meetingCount }) {
+    const person = {};
+    if (name) person.name = name;
+    if (email) person.email = email;
+    const properties = {
+      source: 'pathcal_bookmarklet',
+      term: termLabel,
+      course_count: courseCount,
+      meeting_pattern_count: meetingCount,
+      ...(Object.keys(person).length ? { $set: person } : { $process_person_profile: false })
+    };
+    return fetch(POSTHOG_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: POSTHOG_KEY,
+        distinct_id: telemetryId(),
+        event: 'calendar downloaded',
+        properties
+      }),
+      keepalive: true
+    }).catch(() => {});
+  }
+
   function showModal() {
     const detectedLabel = detectTerm();
     const meetings = collectMeetings();
@@ -179,38 +220,84 @@
       <style>
         #${ROOT_ID}{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;padding:20px;background:rgba(1,31,91,.28);font-family:Arial,sans-serif;color:#011f5b}
         #${ROOT_ID} *{box-sizing:border-box}
-        #${ROOT_ID} .pc-box{width:min(460px,100%);padding:26px;border:1px solid rgba(1,31,91,.16);border-radius:18px;background:#fff;box-shadow:0 24px 80px rgba(1,31,91,.22)}
+        #${ROOT_ID} .pc-box{width:min(540px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:26px;border:1px solid rgba(1,31,91,.16);border-radius:18px;background:#fff;box-shadow:0 24px 80px rgba(1,31,91,.22)}
         #${ROOT_ID} .pc-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
         #${ROOT_ID} h2{margin:0 0 6px;font:400 30px/1.05 Georgia,serif;color:#011f5b}
         #${ROOT_ID} p{margin:0;color:#52617b;font-size:13px;line-height:1.45}
         #${ROOT_ID} .pc-close{border:0;background:transparent;color:#52617b;font-size:22px;cursor:pointer}
-        #${ROOT_ID} .pc-term{margin:20px 0 14px;padding:14px;border:1px solid #b8cbe3;border-radius:11px;background:#eef4fb}
-        #${ROOT_ID} label{display:block;margin-bottom:6px;color:#17559b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
-        #${ROOT_ID} select{width:100%;padding:9px 10px;border:1px solid #9eb3d1;border-radius:8px;background:#fff;color:#011f5b;font:600 14px Arial,sans-serif}
-        #${ROOT_ID} .pc-source{margin-top:7px;font-size:11px;color:#52617b}
+        #${ROOT_ID} .pc-contact{margin:20px 0 14px;padding:16px;border:1px solid #b8cbe3;border-radius:12px;background:#eef4fb}
+        #${ROOT_ID} .pc-contact-title{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:12px}
+        #${ROOT_ID} .pc-contact-title strong{font-size:14px;color:#011f5b}
+        #${ROOT_ID} .pc-contact-title span{color:#52617b;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+        #${ROOT_ID} .pc-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        #${ROOT_ID} label{display:block;color:#17559b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+        #${ROOT_ID} input,#${ROOT_ID} select{width:100%;margin-top:6px;padding:10px;border:1px solid #9eb3d1;border-radius:8px;background:#fff;color:#011f5b;font:600 13px Arial,sans-serif}
+        #${ROOT_ID} input::placeholder{color:#8491a7;font-weight:400}
+        #${ROOT_ID} input:focus,#${ROOT_ID} select:focus{outline:2px solid rgba(23,85,155,.2);border-color:#17559b}
+        #${ROOT_ID} .pc-privacy{margin-top:10px;font-size:10px;color:#52617b;line-height:1.4}
+        #${ROOT_ID} .pc-term{margin:12px 0 14px;border:1px solid rgba(1,31,91,.13);border-radius:10px;background:#fff}
+        #${ROOT_ID} .pc-term summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;cursor:pointer;list-style:none}
+        #${ROOT_ID} .pc-term summary::-webkit-details-marker{display:none}
+        #${ROOT_ID} .pc-term summary div{display:flex;align-items:baseline;gap:8px}
+        #${ROOT_ID} .pc-term summary span{color:#52617b;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+        #${ROOT_ID} .pc-term summary strong{font-size:13px;color:#011f5b}
+        #${ROOT_ID} .pc-change{color:#17559b;font-size:11px;font-weight:700}
+        #${ROOT_ID} .pc-term-edit{padding:0 13px 13px}
+        #${ROOT_ID} .pc-source{margin-top:7px;font-size:10px;color:#52617b}
         #${ROOT_ID} .pc-error{margin:12px 0;padding:11px 12px;border-radius:9px;background:#fff1f1;color:#820000;font-size:12px;line-height:1.4}
         #${ROOT_ID} .pc-summary{display:flex;gap:18px;margin:16px 0;color:#52617b;font-size:12px}
         #${ROOT_ID} .pc-summary strong{color:#011f5b}
         #${ROOT_ID} .pc-actions{display:flex;justify-content:flex-end;padding-top:16px;border-top:1px solid rgba(1,31,91,.13)}
         #${ROOT_ID} .pc-download{padding:11px 18px;border:0;border-radius:999px;background:#011f5b;color:#fff;font-weight:700;cursor:pointer}
         #${ROOT_ID} .pc-download:disabled{cursor:not-allowed;opacity:.45}
+        #${ROOT_ID} .pc-byline{margin-top:14px;color:#758198;font-size:10px;text-align:center}
+        #${ROOT_ID} .pc-byline a{color:#17559b;text-decoration:none}
+        @media(max-width:520px){#${ROOT_ID} .pc-fields{grid-template-columns:1fr}#${ROOT_ID} .pc-contact-title{display:block}#${ROOT_ID} .pc-contact-title span{display:block;margin-top:4px}}
       </style>
       <div class="pc-box" role="dialog" aria-modal="true" aria-labelledby="pc-title">
-        <div class="pc-top"><div><h2 id="pc-title">Your calendar is ready.</h2><p>Review the detected term, then download your class schedule.</p></div><button class="pc-close" aria-label="Close">×</button></div>
-        <div class="pc-term">
-          <label for="pc-term-select">Semester</label>
-          <select id="pc-term-select">${availableTerms.map((label) => `<option ${label === selectedLabel ? 'selected' : ''}>${label}</option>`).join('')}</select>
-          <div class="pc-source">Dates and breaks from Penn Almanac</div>
-        </div>
+        <div class="pc-top"><div><h2 id="pc-title">Your calendar is ready.</h2><p>Optionally introduce yourself, then download your class schedule.</p></div><button class="pc-close" aria-label="Close">×</button></div>
         ${meetings.length ? '' : '<div class="pc-error">No registered meetings were found. Open the Primary Cart calendar in Path@Penn, then click the bookmark again.</div>'}
+        <div class="pc-contact">
+          <div class="pc-contact-title"><strong>Help me improve Pathcal</strong><span>Optional</span></div>
+          <div class="pc-fields">
+            <label for="pc-name">Name<input id="pc-name" autocomplete="name" placeholder="Your name" /></label>
+            <label for="pc-email">Email<input id="pc-email" type="email" autocomplete="email" placeholder="you@upenn.edu" /></label>
+          </div>
+          <div class="pc-privacy">If provided, these details go to PostHog with the detected term and aggregate counts. Course names and meeting times never leave this page.</div>
+        </div>
+        <details class="pc-term">
+          <summary><div><span>Detected term</span><strong class="pc-term-name">${selectedLabel}</strong></div><span class="pc-change">Change</span></summary>
+          <div class="pc-term-edit">
+            <label for="pc-term-select">Semester<select id="pc-term-select">${availableTerms.map((label) => `<option ${label === selectedLabel ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
+            <div class="pc-source">Dates and breaks from Penn Almanac</div>
+          </div>
+        </details>
         <div class="pc-summary"><span><strong>${new Set(meetings.map((item) => item.summary)).size}</strong> courses</span><span><strong>${meetings.length}</strong> meeting patterns</span><span><strong>New York</strong> time</span></div>
         <div class="pc-actions"><button class="pc-download" ${meetings.length ? '' : 'disabled'}>Download .ics</button></div>
+        <div class="pc-byline">A project by <a href="https://www.instagram.com/intel.build.stuff/" target="_blank" rel="noreferrer">Intel Chen · @intel.build.stuff ↗</a></div>
       </div>`;
     document.body.appendChild(root);
     root.querySelector('.pc-close').addEventListener('click', () => root.remove());
     root.addEventListener('click', (event) => { if (event.target === root) root.remove(); });
+    root.querySelector('#pc-term-select').addEventListener('change', (event) => {
+      root.querySelector('.pc-term-name').textContent = event.target.value;
+    });
     root.querySelector('.pc-download').addEventListener('click', () => {
       const label = root.querySelector('#pc-term-select').value;
+      const name = root.querySelector('#pc-name').value.trim();
+      const emailInput = root.querySelector('#pc-email');
+      const email = emailInput.value.trim();
+      if (email && !emailInput.checkValidity()) {
+        emailInput.reportValidity();
+        return;
+      }
+      void captureTelemetry({
+        name,
+        email,
+        termLabel: label,
+        courseCount: new Set(meetings.map((item) => item.summary)).size,
+        meetingCount: meetings.length
+      });
       downloadCalendar(buildIcs(meetings, TERM_DATA.terms[label]), label);
       root.remove();
     });

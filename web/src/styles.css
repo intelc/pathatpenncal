@@ -126,6 +126,7 @@ kbd { min-width: 25px; padding: 5px 6px; border: 1px solid rgba(1,31,91,.18); bo
 .semester-note a { color: var(--blue); font-weight: 500; text-decoration: none; }
 footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 1180px; margin: 0 auto; padding: 28px 30px 34px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
 footer p { margin: 0; }
+footer p a { color: var(--blue); font-weight: 500; text-decoration: none; }
 
 @keyframes bookmark-drag {
   0%, 14% { opacity: 1; transform: translate(50px, 190px) scale(1); }

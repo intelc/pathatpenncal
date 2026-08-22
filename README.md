@@ -8,7 +8,7 @@ The new bookmarklet-based exporter lives at [pathcal.intelchen.com](https://path
 
 The website source is in [`web/`](web/). The original console script remains available below for existing users.
 
-Pathcal processes schedules locally in the browser. It does not transmit a student's name, courses, or calendar data.
+Pathcal builds schedules locally in the browser. On download, it sends the detected term and aggregate course/meeting counts to PostHog. A student may optionally include their name and email. Course names, meeting times, and calendar contents are never transmitted.
 
 ## Development
 
@@ -37,4 +37,4 @@ Path at Penn sucks no doubt. One important feature of pennintouch was the abilit
 5. ta-da! Take the .ics file and import it into your calendar.
 
 ## Contact
-For feedback or questions, please contact me at yihechen@seas.upenn.edu
+Pathcal is a project by [Intel Chen](https://www.instagram.com/intel.build.stuff/). For feedback or questions, please contact me at yihechen@seas.upenn.edu.

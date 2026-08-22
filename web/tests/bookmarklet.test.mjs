@@ -21,3 +21,17 @@ test('bookmarklet URL preserves syntax and Unicode through browser-safe encoding
   assert.equal(decoded, source);
   assert.doesNotThrow(() => new Function(decoded));
 });
+
+test('term detection checks the visible Primary Cart info bar', async () => {
+  const source = await readFile(new URL('../src/bookmarklet-source.js', import.meta.url), 'utf8');
+  assert.match(source, /panel__info-bar/);
+  assert.match(source, /primaryCartText/);
+});
+
+test('telemetry sends aggregate counts but not course names or meeting times', async () => {
+  const source = await readFile(new URL('../src/bookmarklet-source.js', import.meta.url), 'utf8');
+  const telemetry = source.slice(source.indexOf('function captureTelemetry'), source.indexOf('function showModal'));
+  assert.match(telemetry, /course_count/);
+  assert.match(telemetry, /meeting_pattern_count/);
+  assert.doesNotMatch(telemetry, /meeting\.summary|classes:/);
+});
