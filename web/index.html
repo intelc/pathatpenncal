@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Import your Path@Penn classes into your calendar in three quick steps." />
+    <meta name="description" content="Import your Path@Penn classes into your calendar in four quick steps." />
     <meta name="theme-color" content="#f7f5ef" />
     <meta property="og:title" content="Pathcal — Path@Penn to your calendar" />
-    <meta property="og:description" content="Set it up once, then export your Path@Penn classes in three quick steps." />
+    <meta property="og:description" content="Set it up once, then export your Path@Penn classes in four quick steps." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pathcal.intelchen.com/" />
     <meta property="og:image" content="https://pathcal.intelchen.com/og.png" />
@@ -31,7 +31,7 @@
             <span aria-hidden="true">classes into</span>
             <span class="headline-chip calendar-chip" aria-hidden="true"><img src="/google-calendar.svg" alt="" /><span>Calendar</span></span>
           </h1>
-          <p>Set it up once, then export your schedule in three quick steps.</p>
+          <p>Set it up once, then export your schedule in four quick steps.</p>
         </header>
 
         <section class="walkthrough" aria-label="Set up and use Pathcal">
@@ -82,7 +82,7 @@
           <article class="walkthrough-step" id="step-3">
             <div class="step-copy">
               <p class="step-label"><span>3</span> Export</p>
-              <h2>Click the bookmark. That’s it.</h2>
+              <h2>Click the bookmark and download.</h2>
               <p>Pathcal detects the semester, includes Penn’s breaks and schedule swaps, and downloads a calendar file ready to open.</p>
               <p class="privacy-note"><span aria-hidden="true">▢</span> Course names and meeting times stay local. Optional contact details and aggregate usage go to PostHog.</p>
             </div>
@@ -92,6 +92,33 @@
                 <div class="visual-bookmarks"><span class="saved-bookmark">↗ Export Path@Penn</span><span>Canvas</span><span>Penn Email</span></div>
                 <div class="export-card"><span class="success-mark">✓</span><div><strong>Your calendar is ready.</strong><small>Fall 2026 · 4 courses · breaks included</small></div><b>Download .ics</b></div>
                 <span class="click-pointer" aria-hidden="true">↖</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="walkthrough-step reverse" id="step-4">
+            <div class="step-copy">
+              <p class="step-label"><span>4</span> Add to Calendar</p>
+              <h2>Import the file into Google Calendar.</h2>
+              <ol class="import-list">
+                <li>Open <strong>Settings</strong>, then <strong>Import &amp; Export</strong>.</li>
+                <li>Choose <strong>Select file from your computer</strong> and open the downloaded <code>.ics</code>.</li>
+                <li>Pick the calendar you want, then click <strong>Import</strong>.</li>
+              </ol>
+              <a class="calendar-link" href="https://calendar.google.com/calendar/u/0/r/settings/export" target="_blank" rel="noreferrer">Open Google Calendar <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="step-visual calendar-visual" role="img" aria-label="Google Calendar Import and Export settings with the downloaded Pathcal file selected">
+              <div class="calendar-frame">
+                <div class="calendar-top"><img src="/google-calendar.svg" alt="" /><strong>Calendar</strong><span>Settings</span></div>
+                <div class="calendar-body">
+                  <aside><span>General</span><span>Add calendar</span><strong>Import &amp; export</strong><span>Settings for my calendars</span></aside>
+                  <div class="import-panel">
+                    <h3>Import</h3>
+                    <div class="selected-file"><span>✓</span><div><strong>penn-classes-fall-2026.ics</strong><small>Selected from Downloads</small></div></div>
+                    <label>Add to calendar<div>Intel’s Calendar <span>⌄</span></div></label>
+                    <button type="button">Import</button>
+                  </div>
+                </div>
               </div>
             </div>
           </article>

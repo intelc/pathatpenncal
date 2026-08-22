@@ -55,9 +55,9 @@ a { color: inherit; }
 .step-copy h2 { margin: 0 0 18px; font-size: clamp(40px, 4.5vw, 58px); line-height: 1; }
 .step-copy > p:not(.step-label, .drag-status, .privacy-note) { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
 .step-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
-.bookmarklet, .path-link { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 21px; border-radius: 999px; background: var(--navy); color: white; font-weight: 500; text-decoration: none; box-shadow: 0 14px 30px rgba(1,31,91,.19); transition: transform .18s ease, box-shadow .18s ease; }
+.bookmarklet, .path-link, .calendar-link { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 21px; border-radius: 999px; background: var(--navy); color: white; font-weight: 500; text-decoration: none; box-shadow: 0 14px 30px rgba(1,31,91,.19); transition: transform .18s ease, box-shadow .18s ease; }
 .bookmarklet { cursor: grab; -webkit-tap-highlight-color: transparent; }
-.bookmarklet:hover, .path-link:hover { transform: translateY(-2px); box-shadow: 0 18px 38px rgba(1,31,91,.24); }
+.bookmarklet:hover, .path-link:hover, .calendar-link:hover { transform: translateY(-2px); box-shadow: 0 18px 38px rgba(1,31,91,.24); }
 .bookmarklet:active { cursor: grabbing; }
 .copy-action { min-height: 44px; padding: 0 14px; border: 0; background: transparent; color: var(--blue); cursor: pointer; font-size: 12px; }
 .drag-status { min-height: 18px; margin: 10px 0 0; color: var(--muted); font-size: 11px; }
@@ -67,7 +67,11 @@ a { color: inherit; }
 .shortcuts > span { display: inline-flex; align-items: center; gap: 3px; color: var(--muted); font-size: 10px; }
 kbd { min-width: 25px; padding: 5px 6px; border: 1px solid rgba(1,31,91,.18); border-bottom-width: 2px; border-radius: 6px; background: white; color: var(--navy); text-align: center; font: 500 10px 'DM Sans',sans-serif; box-shadow: 0 2px 4px rgba(1,31,91,.05); }
 .chrome-help p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
-.path-link { margin-top: 28px; }
+.path-link, .calendar-link { margin-top: 28px; }
+.import-list { display: grid; gap: 11px; margin: 0; padding: 0; color: var(--muted); counter-reset: import-step; list-style: none; }
+.import-list li { position: relative; padding-left: 31px; font-size: 14px; line-height: 1.55; counter-increment: import-step; }
+.import-list li::before { content: counter(import-step); position: absolute; top: 1px; left: 0; display: grid; width: 21px; height: 21px; place-items: center; border-radius: 50%; background: var(--soft-blue); color: var(--blue); font-size: 10px; font-weight: 500; }
+.import-list code { padding: 2px 5px; border-radius: 5px; background: rgba(1,31,91,.06); color: var(--navy); font: 500 11px 'DM Sans',sans-serif; }
 .privacy-note { display: flex; align-items: center; gap: 7px; margin: 20px 0 0; color: var(--muted); font-size: 12px; }
 .privacy-note span { color: var(--blue); }
 
@@ -120,6 +124,26 @@ kbd { min-width: 25px; padding: 5px 6px; border: 1px solid rgba(1,31,91,.18); bo
 .export-card small { margin-top: 5px; color: var(--muted); font-size: 8px; }
 .export-card > b { padding: 9px 11px; border-radius: 999px; background: var(--navy); color: white; font-size: 8px; font-weight: 500; }
 
+.calendar-frame { overflow: hidden; height: 350px; border: 1px solid rgba(1,31,91,.16); border-radius: 18px; background: white; box-shadow: 0 22px 55px var(--shadow); }
+.calendar-top { display: flex; align-items: center; gap: 10px; height: 62px; padding: 13px 18px; border-bottom: 1px solid var(--line); background: #fbfcfe; }
+.calendar-top img { width: 30px; height: 32px; object-fit: contain; }
+.calendar-top strong { color: #344054; font-size: 15px; font-weight: 500; }
+.calendar-top span { margin-left: auto; color: var(--muted); font-size: 9px; }
+.calendar-body { display: grid; grid-template-columns: 155px 1fr; height: 288px; }
+.calendar-body aside { display: flex; flex-direction: column; gap: 4px; padding: 18px 11px; border-right: 1px solid var(--line); background: #fbfaf6; color: var(--muted); font-size: 8px; }
+.calendar-body aside span, .calendar-body aside strong { padding: 9px 10px; font-weight: 400; }
+.calendar-body aside strong { border-radius: 6px; background: #e8f0fe; color: #1967d2; }
+.import-panel { padding: 22px; }
+.import-panel h3 { margin: 0 0 17px; color: #344054; font-size: 18px; font-weight: 500; }
+.selected-file { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #b8cbe3; border-radius: 8px; background: #f8fbff; }
+.selected-file > span { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 6px; background: #e8f0fe; color: #1967d2; font-size: 10px; }
+.selected-file strong, .selected-file small { display: block; }
+.selected-file strong { color: #344054; font-size: 9px; }
+.selected-file small { margin-top: 3px; color: var(--muted); font-size: 7px; }
+.import-panel label { display: block; margin-top: 15px; color: var(--muted); font-size: 8px; }
+.import-panel label > div { display: flex; justify-content: space-between; margin-top: 5px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 7px; color: #344054; font-size: 9px; }
+.import-panel button { float: right; margin-top: 14px; padding: 9px 17px; border: 0; border-radius: 5px; background: #1a73e8; color: white; font-size: 9px; font-weight: 500; }
+
 .semester-note { width: min(760px, calc(100% - 40px)); margin: 0 auto 100px; padding: 19px 24px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.66); color: var(--muted); text-align: center; font-size: 12px; }
 .semester-note p { margin: 0; }
 .semester-note span { color: var(--blue); }
@@ -157,6 +181,7 @@ footer p a { color: var(--blue); font-weight: 500; text-decoration: none; }
   .step-copy h2 { font-size: 40px; }
   .shortcuts { display: grid; }
   .chrome-frame, .app-frame { height: 310px; }
+  .calendar-frame { height: 310px; }
   .app-body { grid-template-columns: 120px 1fr; height: 246px; }
   .app-body aside { padding: 13px 7px; }
   .app-body aside span, .app-body aside strong { padding: 8px 6px; font-size: 7px; }
@@ -165,6 +190,10 @@ footer p a { color: var(--blue); font-weight: 500; text-decoration: none; }
   .mini-schedule { padding: 14px 8px; }
   .mini-schedule section { height: 180px; }
   .app-top img { width: 115px; }
+  .calendar-body { grid-template-columns: 105px 1fr; height: 248px; }
+  .calendar-body aside { padding: 12px 6px; }
+  .calendar-body aside span, .calendar-body aside strong { padding: 7px 5px; font-size: 7px; }
+  .import-panel { padding: 15px 10px; }
   .drag-token { left: 40%; }
   .export-card { grid-template-columns: auto 1fr; top: 135px; padding: 16px; }
   .export-card > b { grid-column: 1 / -1; justify-self: stretch; text-align: center; }
