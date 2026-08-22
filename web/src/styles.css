@@ -91,11 +91,11 @@ kbd { min-width: 25px; padding: 5px 6px; border: 1px solid rgba(1,31,91,.18); bo
 
 .app-top { display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 14px 18px; background: var(--navy); color: white; font-size: 10px; }
 .app-top img { width: 138px; height: auto; }
-.app-body { display: grid; grid-template-columns: 135px 1fr; height: 286px; }
+.app-body { display: grid; grid-template-columns: 170px 1fr; height: 286px; }
 .app-body aside { display: flex; flex-direction: column; gap: 7px; padding: 20px 12px; border-right: 1px solid var(--line); background: #fbfaf6; color: var(--muted); font-size: 9px; }
 .app-body aside span, .app-body aside strong { padding: 9px 10px; font-weight: 400; }
-.app-body aside strong { position: relative; border-radius: 7px; background: white; color: var(--navy); box-shadow: 0 7px 18px var(--shadow); }
-.app-body aside strong b { position: absolute; right: 8px; color: var(--red); animation: point-primary 1.7s ease-in-out infinite; }
+.app-body aside strong { display: flex; align-items: center; gap: 12px; min-height: 48px; border-radius: 6px; background: #08245f; color: white; font-size: 10px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; box-shadow: 0 8px 20px rgba(1,31,91,.18); }
+.app-body aside strong b { color: #75b6df; font-size: 19px; line-height: 1; animation: point-primary 1.7s ease-in-out infinite; }
 .mini-schedule { padding: 20px 16px; }
 .mini-schedule > div { display: flex; justify-content: space-between; margin-bottom: 14px; }
 .mini-schedule strong { font-size: 12px; }
@@ -133,7 +133,7 @@ footer p { margin: 0; }
   92%, 100% { opacity: 0; transform: translate(-75%, 0) scale(.94); }
 }
 @keyframes target-ready { 0%, 38% { background: transparent; } 52%, 88% { border-style: solid; background: var(--soft-blue); } }
-@keyframes point-primary { 50% { transform: translateX(-4px); } }
+@keyframes point-primary { 50% { transform: translateX(3px); } }
 @keyframes cursor-click { 0%, 20% { opacity: 0; transform: translate(70px, 70px); } 38%, 48% { opacity: 1; transform: translate(0, 0); } 58%, 100% { opacity: 0; transform: translate(0, 0); } }
 @keyframes bookmark-click { 0%, 38% { transform: scale(1); } 45% { transform: scale(.94); } 52%, 100% { transform: scale(1); } }
 @keyframes export-ready { 0%, 48% { opacity: 0; transform: translate(-50%, 15px) scale(.97); } 64%, 100% { opacity: 1; transform: translate(-50%, 0) scale(1); } }
@@ -156,9 +156,11 @@ footer p { margin: 0; }
   .step-copy h2 { font-size: 40px; }
   .shortcuts { display: grid; }
   .chrome-frame, .app-frame { height: 310px; }
-  .app-body { grid-template-columns: 100px 1fr; height: 246px; }
+  .app-body { grid-template-columns: 120px 1fr; height: 246px; }
   .app-body aside { padding: 13px 7px; }
   .app-body aside span, .app-body aside strong { padding: 8px 6px; font-size: 7px; }
+  .app-body aside strong { gap: 6px; min-height: 42px; letter-spacing: .04em; }
+  .app-body aside strong b { font-size: 15px; }
   .mini-schedule { padding: 14px 8px; }
   .mini-schedule section { height: 180px; }
   .app-top img { width: 115px; }
