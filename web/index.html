@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Export your registered Path@Penn schedule to Google, Apple, or Outlook Calendar in one click." />
+    <meta name="description" content="Import your Path@Penn classes into your calendar in one click." />
     <meta name="theme-color" content="#f7f5ef" />
-    <meta property="og:title" content="Pathcal — Your Penn schedule, on your calendar" />
+    <meta property="og:title" content="Pathcal — Path@Penn to your calendar" />
     <meta property="og:description" content="One click from Path@Penn. No console and no semester dates to configure." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pathcal.intelchen.com/" />
@@ -14,7 +14,7 @@
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://pathcal.intelchen.com/og.png" />
-    <title>Pathcal — Export your Path@Penn schedule</title>
+    <title>Pathcal — Import Path@Penn classes into your calendar</title>
   </head>
   <body data-demo-step="1">
     <div class="page-shell">
@@ -29,9 +29,12 @@
 
       <main id="top">
         <header class="hero">
-          <p class="eyebrow"><i aria-hidden="true"></i> Made for Penn students</p>
-          <h1>Your Penn schedule,<br />on your calendar.</h1>
-          <p class="hero-copy">One click from Path@Penn. No console, no semester dates to configure, and no schedule data leaving your browser.</p>
+          <h1 aria-label="Import your Path at Penn classes into Calendar">
+            <span aria-hidden="true">Import your</span>
+            <span class="headline-chip path-chip" aria-hidden="true"><img src="/path-at-penn.svg" alt="" /></span>
+            <span aria-hidden="true">classes into</span>
+            <span class="headline-chip calendar-chip" aria-hidden="true"><img src="/google-calendar.svg" alt="" /><span>Calendar</span></span>
+          </h1>
           <div class="hero-actions">
             <a class="bookmarklet" data-bookmarklet draggable="true" href="#"><span aria-hidden="true">↗</span> Export Path@Penn</a>
             <button class="secondary-action" data-demo type="button">See how it works</button>
