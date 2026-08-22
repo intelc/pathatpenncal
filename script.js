@@ -7,10 +7,6 @@
 let CURRENT_SEMESTER_END = `1207`  //MMDD
 let CURRENT_SEMESTER_BEGINING_MONDAY = `0824`
 
-//Following optional content helps me know who have used this script-- thank you！
-let YOUR_NAME = `john doe`
-let YOUR_EMAIL= ``
-
 //////////////////////
 //////////////////////
 
@@ -192,33 +188,6 @@ END:VEVENT\n`
 
   cal_str = cal_str + event_str
 }
-// Define the URL
-const url = 'https://app.posthog.com/capture/';
-
-// Define the request payload
-const payload = {
-  api_key: 'phc_uo5R9K8TzXAeF3WmOUqsKJ2cxdR8N0x14BylN5xeLOl', // Your API key
-  event: 'calendar download', // Replace with your event name
-  properties: {
-    distinct_id: document.querySelector('body > header > div > div > span.user-name').innerText, // Replace with the distinct ID of your user
-    classes:unique_courses,
-    optional_name: YOUR_NAME,
-    optional_email: YOUR_EMAIL,
-  },
-  timestamp: new Date().toISOString() // Replace with your timestamp, if needed
-};
-
-// Make the POST request
-fetch(url, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(payload)
-})
-  .then(response => response.json())
-  .then(data => console.log('Success:', data))
-  .catch((error) => console.error('Error:', error));
 cal_str = cal_str + suffix
 
 // Start file download.
