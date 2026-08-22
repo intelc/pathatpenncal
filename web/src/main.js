@@ -41,8 +41,9 @@ bookmarklet.addEventListener('click', (event) => {
 copyButton.addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(bookmarkletUrl);
-    copyButton.textContent = 'Copied';
-    setTimeout(() => { copyButton.textContent = 'Copy bookmarklet'; }, 1600);
+    copyButton.textContent = 'Bookmark URL copied';
+    caption.textContent = 'Paste it into a bookmark’s URL field—not the DevTools Console.';
+    setTimeout(() => { copyButton.textContent = 'Copy bookmark URL'; }, 2200);
   } catch {
     copyButton.textContent = 'Copy unavailable';
   }

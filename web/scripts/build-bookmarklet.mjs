@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { minify } from 'terser';
+import { toBookmarkletUrl } from './bookmarklet-url.mjs';
 
 const sourceUrl = new URL('../src/bookmarklet-source.js', import.meta.url);
 const termsUrl = new URL('../data/terms.json', import.meta.url);
@@ -18,6 +19,8 @@ const result = await minify(hydrated, {
 });
 
 if (!result.code) throw new Error('Bookmarklet build produced no code');
-const bookmarklet = `javascript:${result.code}`;
+// Dragging or copying a raw JavaScript URL can alter backslashes, quotes, and
+// Unicode characters. Percent-encode the payload so browsers receive it intact.
+const bookmarklet = toBookmarkletUrl(result.code);
 await writeFile(outputUrl, `export default ${JSON.stringify(bookmarklet)};\n`);
 console.log(`Built bookmarklet (${bookmarklet.length.toLocaleString()} characters).`);
